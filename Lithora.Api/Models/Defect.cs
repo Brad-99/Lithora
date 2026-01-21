@@ -1,4 +1,4 @@
-namespace PhotoQualityTracker.Api.Models;
+namespace Lithora.Api.Models;
 
 public class Defect
 {
