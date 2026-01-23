@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Lithora.Api.Data;
+using Lithora.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<InspectionService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
