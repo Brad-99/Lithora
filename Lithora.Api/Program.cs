@@ -10,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<InspectionService>();
+builder.Services.AddScoped<DefectService>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
