@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<InspectionService>();
 builder.Services.AddScoped<DefectService>();
 builder.Services.AddScoped<MachineSimulatorService>();
+builder.Services.AddScoped<IAiDefectAnalyzer, MockAiDefectAnalyzer>();
 
 
 
