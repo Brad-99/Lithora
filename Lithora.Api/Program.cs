@@ -14,6 +14,14 @@ builder.Services.AddScoped<DefectService>();
 builder.Services.AddScoped<MachineSimulatorService>();
 builder.Services.AddScoped<IAiDefectAnalyzer, MockAiDefectAnalyzer>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -23,6 +31,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
+// Apply EF Core migrations at startup (creates SQLite tables if missing)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -30,7 +45,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // disable for local http static frontend
+
+app.UseCors();
 
 app.UseAuthorization();
 

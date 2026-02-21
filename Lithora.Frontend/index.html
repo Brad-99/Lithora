@@ -1,13 +1,143 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8" />
   <title>Lithora Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; background: #f5f7fb; color: #1f2a44; }
+    h1 { margin-bottom: 8px; }
+    h2 { margin-top: 24px; }
+    .card { background: #fff; padding: 16px; margin: 12px 0; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+    label { display: block; margin: 6px 0 2px; font-weight: 600; }
+    input, select, button { padding: 8px; border: 1px solid #d3dae6; border-radius: 6px; font-size: 14px; }
+    button { cursor: pointer; background: #2f6fed; color: white; border: none; font-weight: 600; }
+    button.secondary { background: #e5e8ef; color: #1f2a44; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .row > div { flex: 1 1 220px; }
+    pre { background: #0b1021; color: #d1e8ff; padding: 12px; border-radius: 8px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { padding: 8px; border-bottom: 1px solid #e6e9f2; text-align: left; }
+    th { background: #f0f3f9; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .pass { background: #e6f5ea; color: #2d8a4e; }
+    .fail { background: #ffeaea; color: #c62828; }
+  </style>
 </head>
 <body>
-  <h1>Lithora</h1>
+  <h1>Lithora Dashboard</h1>
+  <div id="status" aria-live="polite"></div>
 
-  <button onclick="simulate()">Simulate Machine</button>
-  <pre id="output"></pre>
+  <div class="card">
+    <h2>Simulate Machine Run</h2>
+    <div class="row">
+      <div>
+        <label for="sim-machine">Machine ID</label>
+        <input id="sim-machine" value="M01" />
+      </div>
+      <div style="align-self:flex-end">
+        <button id="btn-simulate">Simulate</button>
+      </div>
+    </div>
+    <pre id="simulate-output" aria-live="polite"></pre>
+  </div>
+
+  <div class="card">
+    <h2>Manual Inspection Entry</h2>
+    <div class="row">
+      <div>
+        <label for="ins-machine">Machine ID</label>
+        <input id="ins-machine" value="M01" />
+      </div>
+      <div>
+        <label for="ins-photolot">Photo Lot</label>
+        <input id="ins-photolot" placeholder="LOT-123" />
+      </div>
+      <div>
+        <label for="ins-result">Result</label>
+        <select id="ins-result">
+          <option value="0">Pass</option>
+          <option value="1">Fail</option>
+        </select>
+      </div>
+      <div style="align-self:flex-end">
+        <button id="btn-create-inspection">Create Inspection</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Inspections</h2>
+    <div class="row">
+      <div>
+        <label for="filter-machine">Machine</label>
+        <input id="filter-machine" placeholder="M01" />
+      </div>
+      <div>
+        <label for="filter-from">From (UTC)</label>
+        <input id="filter-from" type="date" />
+      </div>
+      <div>
+        <label for="filter-to">To (UTC)</label>
+        <input id="filter-to" type="date" />
+      </div>
+      <div style="align-self:flex-end">
+        <button id="btn-refresh" class="secondary">Refresh</button>
+      </div>
+    </div>
+    <div id="inspections-table"></div>
+  </div>
+
+  <div class="card">
+    <h2>Fail Rate (last N days)</h2>
+    <div class="row">
+      <div>
+        <label for="stats-machine">Machine ID</label>
+        <input id="stats-machine" value="M01" />
+      </div>
+      <div>
+        <label for="stats-days">Days</label>
+        <input id="stats-days" type="number" min="1" value="7" />
+      </div>
+      <div style="align-self:flex-end">
+        <button id="btn-stats" class="secondary">Get Stats</button>
+      </div>
+    </div>
+    <pre id="stats-output"></pre>
+  </div>
+
+  <div class="card">
+    <h2>Defects for Selected Inspection</h2>
+    <div class="row">
+      <div>
+        <label for="defect-inspection-id">Inspection ID</label>
+        <input id="defect-inspection-id" placeholder="Select from table above" />
+      </div>
+      <div style="align-self:flex-end">
+        <button id="btn-load-defects" class="secondary">Load Defects</button>
+      </div>
+    </div>
+    <div id="defects-table"></div>
+
+    <h3>Add Defect</h3>
+    <div class="row">
+      <div>
+        <label for="def-type">Type</label>
+        <input id="def-type" value="Scratch" />
+      </div>
+      <div>
+        <label for="def-severity">Severity (1-5)</label>
+        <input id="def-severity" type="number" min="1" max="5" value="3" />
+      </div>
+      <div>
+        <label for="def-desc">Description</label>
+        <input id="def-desc" placeholder="optional" />
+      </div>
+      <div style="align-self:flex-end">
+        <button id="btn-add-defect">Add Defect</button>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
